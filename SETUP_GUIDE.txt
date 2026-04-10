@@ -1,0 +1,280 @@
+# PhishGuard AI v2.0 — Complete Setup Guide
+# FastAPI + React + MongoDB
+
+===========================================================
+  FOLDER STRUCTURE (what you should have after this guide)
+===========================================================
+
+phishguard/
+├── backend/
+│   ├── main.py               ← FastAPI app entry point
+│   ├── database.py           ← MongoDB connection
+│   ├── config.py             ← Settings / environment vars
+│   ├── auth.py               ← JWT + password utilities
+│   ├── detector.py           ← Phishing detection engine
+│   ├── requirements.txt      ← Python dependencies
+│   ├── .env                  ← Your secrets (never commit this)
+│   ├── phishing_pipeline_v2.pkl  ← Your trained model (copy here)
+│   └── routes/
+│       ├── __init__.py
+│       ├── auth.py           ← /api/auth/*  endpoints
+│       ├── scan.py           ← /api/scan/*  endpoints
+│       └── history.py        ← /api/history/* endpoints
+│
+└── frontend/
+    ├── package.json
+    ├── vite.config.js
+    ├── index.html
+    └── src/
+        ├── main.jsx
+        ├── App.jsx
+        ├── index.css
+        ├── api/
+        │   └── client.js     ← Axios with auto JWT header
+        ├── context/
+        │   └── AuthContext.jsx
+        ├── pages/
+        │   ├── Login.jsx
+        │   ├── Register.jsx
+        │   ├── Dashboard.jsx
+        │   └── History.jsx
+        └── components/
+            ├── Layout.jsx
+            └── ScanResult.jsx
+
+
+===========================================================
+  STEP 1 — PREREQUISITES
+===========================================================
+
+Make sure you have these installed:
+
+1. Python 3.10+       → you already have 3.14 ✓
+2. Node.js 18+        → check: node --version
+3. MongoDB Community  → https://www.mongodb.com/try/download/community
+   - Install it, then START the service:
+     Windows: net start MongoDB   (in cmd as Administrator)
+     OR just search "Services" → find MongoDB → Start
+
+4. Git (optional but recommended)
+
+
+===========================================================
+  STEP 2 — COPY YOUR MODEL FILE
+===========================================================
+
+Copy phishing_pipeline_v2.pkl into the backend folder:
+
+    phishguard/backend/phishing_pipeline_v2.pkl
+
+If you retrain, replace this file.
+
+
+===========================================================
+  STEP 3 — BACKEND SETUP
+===========================================================
+
+Open a terminal (cmd or PowerShell) and run:
+
+    cd phishguard/backend
+
+--- Create and activate virtual environment ---
+
+    python -m venv venv
+    venv\Scripts\activate          ← Windows
+    # source venv/bin/activate     ← Mac/Linux
+
+You should see (venv) in your prompt.
+
+--- Install all Python packages ---
+
+    pip install -r requirements.txt
+
+This installs FastAPI, Motor (MongoDB driver), JWT, bcrypt, etc.
+It may take 2-3 minutes.
+
+--- Edit your .env file ---
+
+Open backend/.env and set a strong JWT secret:
+
+    MONGO_URI=mongodb://localhost:27017
+    DB_NAME=phishguard
+    JWT_SECRET=write_any_long_random_string_here_like_abc123xyz789
+
+NOTE: If your MongoDB is on a different port or has a password,
+update MONGO_URI accordingly.
+
+--- Start the backend server ---
+
+    python main.py
+
+You should see:
+    ✅  Connected to MongoDB — database: 'phishguard'
+    INFO:     Uvicorn running on http://0.0.0.0:8000
+
+Test it: open http://localhost:8000 in browser
+→ You should see: {"message": "PhishGuard AI API is running"}
+
+API docs (auto-generated): http://localhost:8000/docs
+→ This shows all endpoints with a UI to test them ✓
+
+
+===========================================================
+  STEP 4 — FRONTEND SETUP
+===========================================================
+
+Open a NEW terminal (keep backend running):
+
+    cd phishguard/frontend
+
+--- Install Node packages ---
+
+    npm install
+
+--- Start the React dev server ---
+
+    npm run dev
+
+You should see:
+    VITE v5.x.x  ready in xxx ms
+    ➜  Local:   http://localhost:5173/
+
+Open http://localhost:5173 in your browser.
+→ You should see the PhishGuard login page ✓
+
+NOTE: The frontend automatically proxies /api/* requests to
+the backend at localhost:8000, so no CORS issues during dev.
+
+
+===========================================================
+  STEP 5 — TEST THE APP
+===========================================================
+
+1. Go to http://localhost:5173/register
+2. Create an account with your email + password
+3. You'll be redirected to the Dashboard
+4. Enter a URL like:
+       http://amaz0n-security-update.net/login
+5. Click Scan → see the phishing verdict
+6. Click History → see all your past scans
+
+Try batch scanning from Dashboard → "Batch Scan" tab.
+
+
+===========================================================
+  STEP 6 — MONGODB VERIFICATION (optional)
+===========================================================
+
+To see your data in MongoDB, install MongoDB Compass (GUI):
+→ https://www.mongodb.com/try/download/compass
+
+Connect to: mongodb://localhost:27017
+→ Database: phishguard
+→ Collections: users, scans
+
+
+===========================================================
+  STEP 7 — DEPLOY TO RENDER (when ready)
+===========================================================
+
+BACKEND — Deploy to Render (free tier)
+
+1. Push your backend folder to GitHub
+   - Add a .gitignore:
+       venv/
+       __pycache__/
+       *.pkl         ← Don't push the model — too large
+       .env          ← Never push secrets
+
+2. Go to https://render.com → New → Web Service
+3. Connect your GitHub repo
+4. Settings:
+   - Root directory:  backend
+   - Build command:   pip install -r requirements.txt
+   - Start command:   uvicorn main:app --host 0.0.0.0 --port $PORT
+   - Environment variables: add MONGO_URI, JWT_SECRET
+
+5. For MongoDB in production, use MongoDB Atlas (free):
+   → https://www.mongodb.com/atlas
+   → Create cluster → Get connection string
+   → Set MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/phishguard
+
+MODEL FILE: Upload phishing_pipeline_v2.pkl separately using
+Render's disk feature or use a small model hosting trick.
+
+FRONTEND — Deploy to Vercel (free)
+
+1. Push frontend folder to GitHub
+2. Go to https://vercel.com → New Project
+3. Set:
+   - Root directory: frontend
+   - Build command:  npm run build
+   - Environment variable:
+       VITE_API_URL = https://your-render-backend-url.onrender.com
+
+4. Update frontend/src/api/client.js:
+   baseURL: import.meta.env.VITE_API_URL + '/api'
+
+5. Also update backend CORS in main.py to allow your Vercel URL.
+
+
+===========================================================
+  COMMON ERRORS & FIXES
+===========================================================
+
+ERROR: "ModuleNotFoundError: No module named 'motor'"
+FIX:   Make sure venv is activated → pip install -r requirements.txt
+
+ERROR: "Connection refused" on MongoDB
+FIX:   MongoDB service isn't running
+       Windows: net start MongoDB  (as Administrator)
+
+ERROR: "phishing_pipeline_v2.pkl not found"
+FIX:   Make sure the file is in phishguard/backend/
+
+ERROR: Frontend shows blank page
+FIX:   Check browser console (F12) for errors
+       Make sure backend is running on port 8000
+
+ERROR: "sklearn version mismatch" when loading model
+FIX:   pip install scikit-learn==1.6.1  (same version used to train)
+
+ERROR: CORS error in browser
+FIX:   In backend/main.py, add your frontend URL to allow_origins
+
+
+===========================================================
+  API ENDPOINTS SUMMARY
+===========================================================
+
+POST   /api/auth/register     → Create account
+POST   /api/auth/login        → Login, get JWT token
+GET    /api/auth/me           → Get current user info
+
+POST   /api/scan/single       → Scan one URL
+POST   /api/scan/batch        → Scan up to 50 URLs
+
+GET    /api/history/          → Get paginated scan history
+DELETE /api/history/          → Clear all history
+DELETE /api/history/{scan_id} → Delete one scan
+
+All /api/scan/* and /api/history/* require:
+    Header: Authorization: Bearer <your_token>
+
+
+===========================================================
+  RUNNING BOTH SERVERS EVERY TIME
+===========================================================
+
+You need TWO terminal windows open:
+
+Terminal 1 (Backend):
+    cd phishguard/backend
+    venv\Scripts\activate
+    python main.py
+
+Terminal 2 (Frontend):
+    cd phishguard/frontend
+    npm run dev
+
+Then open: http://localhost:5173

@@ -1,0 +1,147 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  background: linear-gradient(135deg, #080f1f, #0b1730);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: hdrScan 4s ease-in-out infinite;
+}
+@keyframes hdrScan {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  50%  { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+.hdrLeft  { display: flex; align-items: center; gap: 14px; }
+.hdrIcon  {
+  width: 50px; height: 50px; border-radius: 11px;
+  background: linear-gradient(135deg, #092b5c, #1255a0);
+  border: 1px solid var(--border-hi);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 0 22px rgba(0,200,255,0.18);
+  flex-shrink: 0;
+}
+.hdrTitle {
+  font-family: var(--ff-head);
+  font-size: 24px; font-weight: 700;
+  color: var(--txt1); letter-spacing: 2.5px;
+}
+.hdrSub {
+  font-family: var(--ff-mono);
+  font-size: 9px; color: var(--cyan);
+  letter-spacing: 2px; opacity: 0.75; margin-top: 4px;
+}
+
+.statRow { display: flex; gap: 10px; }
+.statCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 18px;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 90px;
+}
+.statVal {
+  font-family: var(--ff-mono);
+  font-size: 22px; font-weight: 700;
+  color: var(--cyan); line-height: 1;
+}
+.statLbl {
+  font-family: var(--ff-mono);
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 1.5px; color: var(--txt2);
+  text-transform: uppercase; margin-top: 4px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 6px;
+  margin-bottom: 16px;
+}
+.tabBtn {
+  font-family: var(--ff-mono);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 9px; padding: 9px 18px;
+  color: var(--txt2); cursor: pointer;
+  transition: all 0.2s;
+}
+.tabBtn:hover { color: var(--txt1); border-color: var(--border-hi); }
+.tabActive {
+  color: var(--cyan) !important;
+  background: var(--cyan-dim) !important;
+  border-color: rgba(0,200,255,0.28) !important;
+}
+
+/* Input row */
+.inputRow {
+  display: flex; gap: 10px; align-items: center;
+}
+
+/* Textarea */
+.textarea {
+  height: 130px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+/* Batch summary */
+.batchSummary {
+  display: flex; gap: 10px;
+  margin-bottom: 16px;
+}
+.summaryCard {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.summaryVal {
+  font-family: var(--ff-mono);
+  font-size: 26px; font-weight: 700; line-height: 1;
+}
+.summaryLbl {
+  font-family: var(--ff-mono);
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 1.5px; color: var(--txt2);
+  text-transform: uppercase; margin-top: 5px;
+}
+
+/* Batch table */
+.batchTable {
+  width: 100%; border-collapse: collapse;
+}
+.batchTable th {
+  font-family: var(--ff-mono);
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 1.5px; color: var(--txt2);
+  text-transform: uppercase;
+  padding: 8px 10px; text-align: left;
+  border-bottom: 1px solid var(--border-hi);
+}
+.batchTable td {
+  font-family: var(--ff-mono);
+  font-size: 11.5px; color: var(--txt2);
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.batchTable tr:last-child td { border-bottom: none; }
+.urlCell {
+  word-break: break-all;
+  max-width: 380px;
+  color: var(--txt1) !important;
+}
