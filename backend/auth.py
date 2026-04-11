@@ -1,75 +1,48 @@
-from fastapi import APIRouter, HTTPException, status, Depends
-from pydantic import BaseModel, EmailStr
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from fastapi import HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+from config import settings
 from database import get_db
-from auth import hash_password, verify_password, create_access_token, get_current_user
 
-router = APIRouter()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+bearer_scheme = HTTPBearer()
 
-# ── Schemas ──────────────────────────────────────────────────
-class RegisterRequest(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
+# ── Password helpers ─────────────────────────────────────────
+def hash_password(plain: str) -> str:
+    return pwd_context.hash(plain)
 
-class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
+def verify_password(plain: str, hashed: str) -> bool:
+    return pwd_context.verify(plain, hashed)
 
-# ───────── REGISTER ─────────
-@router.post("/register", status_code=201)
-async def register(body: RegisterRequest, db=Depends(get_db)):
-    existing = await db.users.find_one({"email": body.email.lower()})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+# ── JWT helpers ──────────────────────────────────────────────
+def create_access_token(data: dict) -> str:
+    payload = data.copy()
+    expire  = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload.update({"exp": expire})
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
-    if len(body.password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+def decode_token(token: str) -> dict:
+    try:
+        return jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
-    user_doc = {
-        "name":           body.name.strip(),
-        "email":          body.email.lower(),
-        "password":       hash_password(body.password),
-        "created_at":     datetime.now(timezone.utc),
-        "total_scans":    0,
-        "phishing_found": 0,
-    }
-    result = await db.users.insert_one(user_doc)
+# ── Dependency: get current logged-in user ───────────────────
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    db = Depends(get_db),
+):
+    token   = credentials.credentials
+    payload = decode_token(token)
+    email   = payload.get("sub")
+    if not email:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
 
-    token = create_access_token({"sub": body.email.lower()})
-    return {
-        "token": token,
-        "user": {
-            "id":    str(result.inserted_id),
-            "name":  user_doc["name"],
-            "email": user_doc["email"],
-        }
-    }
-
-# ───────── LOGIN ─────────
-@router.post("/login")
-async def login(body: LoginRequest, db=Depends(get_db)):
-    user = await db.users.find_one({"email": body.email.lower()})
-    if not user or not verify_password(body.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-
-    token = create_access_token({"sub": user["email"]})
-    return {
-        "token": token,
-        "user": {
-            "id":    str(user["_id"]),
-            "name":  user["name"],
-            "email": user["email"],
-        }
-    }
-
-# ───────── ME ─────────
-@router.get("/me")
-async def me(current_user=Depends(get_current_user)):
-    return {
-        "id":             str(current_user["_id"]),
-        "name":           current_user["name"],
-        "email":          current_user["email"],
-        "total_scans":    current_user.get("total_scans", 0),
-        "phishing_found": current_user.get("phishing_found", 0),
-    }
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
