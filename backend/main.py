@@ -30,6 +30,7 @@ app.add_middleware(
         "http://localhost:3000",
         "https://ubiquitous-shortbread-ea41db.netlify.app",
         "https://neon-unicorn-bc332f.netlify.app",
+        "https://phishguard-2026.netlify.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
