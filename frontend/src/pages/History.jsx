@@ -12,13 +12,17 @@ const VERDICT_COLOR = {
 function formatDate(iso) {
   if (!iso) return '—'
   const d = new Date(iso)
-  return d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+  return d.toLocaleString('en-IN', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    hour12: true   // 12hr format
+  })
 }
 
 export default function History() {
-  const [data,    setData]    = useState(null)
-  const [page,    setPage]    = useState(1)
-  const [loading, setLoading] = useState(true)
+  const [data,     setData]     = useState(null)
+  const [page,     setPage]     = useState(1)
+  const [loading,  setLoading]  = useState(true)
   const [clearing, setClearing] = useState(false)
 
   const fetchHistory = async (p = 1) => {
@@ -114,7 +118,6 @@ export default function History() {
             </table>
           </div>
 
-          {/* Pagination */}
           {data.total_pages > 1 && (
             <div className={styles.pagination}>
               <button className="pg-btn ghost sm" disabled={page <= 1}

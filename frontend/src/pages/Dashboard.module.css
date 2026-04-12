@@ -2,13 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 28px;
+  padding: 16px 20px;
   background: linear-gradient(135deg, #080f1f, #0b1730);
   border: 1px solid var(--border);
   border-radius: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   position: relative;
   overflow: hidden;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .header::after {
   content: '';
@@ -21,52 +23,54 @@
   50%  { opacity: 1; }
   100% { transform: translateX(100%); opacity: 0; }
 }
-.hdrLeft  { display: flex; align-items: center; gap: 14px; }
+.hdrLeft  { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
 .hdrIcon  {
-  width: 50px; height: 50px; border-radius: 11px;
+  width: 44px; height: 44px; border-radius: 11px;
   background: linear-gradient(135deg, #092b5c, #1255a0);
   border: 1px solid var(--border-hi);
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
+  font-size: 22px;
   box-shadow: 0 0 22px rgba(0,200,255,0.18);
   flex-shrink: 0;
 }
 .hdrTitle {
   font-family: var(--ff-head);
-  font-size: 24px; font-weight: 700;
-  color: var(--txt1); letter-spacing: 2.5px;
+  font-size: 18px; font-weight: 700;
+  color: var(--txt1); letter-spacing: 2px;
+  white-space: nowrap;
 }
 .hdrSub {
   font-family: var(--ff-mono);
-  font-size: 9px; color: var(--cyan);
-  letter-spacing: 2px; opacity: 0.75; margin-top: 4px;
+  font-size: 8px; color: var(--cyan);
+  letter-spacing: 1.5px; opacity: 0.75; margin-top: 3px;
 }
 
-.statRow { display: flex; gap: 10px; }
+.statRow { display: flex; gap: 8px; flex-shrink: 0; }
 .statCard {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 10px 18px;
+  padding: 8px 14px;
   display: flex; flex-direction: column; align-items: center;
-  min-width: 90px;
+  min-width: 75px;
 }
 .statVal {
   font-family: var(--ff-mono);
-  font-size: 22px; font-weight: 700;
+  font-size: 20px; font-weight: 700;
   color: var(--cyan); line-height: 1;
 }
 .statLbl {
   font-family: var(--ff-mono);
-  font-size: 8.5px; font-weight: 700;
-  letter-spacing: 1.5px; color: var(--txt2);
-  text-transform: uppercase; margin-top: 4px;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 1px; color: var(--txt2);
+  text-transform: uppercase; margin-top: 3px;
+  text-align: center;
 }
 
 /* Tabs */
 .tabs {
   display: flex; gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .tabBtn {
   font-family: var(--ff-mono);
@@ -74,9 +78,11 @@
   letter-spacing: 1px; text-transform: uppercase;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 9px; padding: 9px 18px;
+  border-radius: 9px; padding: 8px 14px;
   color: var(--txt2); cursor: pointer;
   transition: all 0.2s;
+  flex: 1;
+  text-align: center;
 }
 .tabBtn:hover { color: var(--txt1); border-color: var(--border-hi); }
 .tabActive {
@@ -87,61 +93,192 @@
 
 /* Input row */
 .inputRow {
-  display: flex; gap: 10px; align-items: center;
+  display: flex; gap: 8px; align-items: center;
+  flex-wrap: wrap;
+}
+.inputRow input {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Textarea */
 .textarea {
-  height: 130px;
+  height: 120px;
   resize: vertical;
   line-height: 1.7;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Batch summary */
 .batchSummary {
-  display: flex; gap: 10px;
-  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
 }
 .summaryCard {
-  flex: 1;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 12px 10px;
   display: flex; flex-direction: column; align-items: center;
 }
 .summaryVal {
   font-family: var(--ff-mono);
-  font-size: 26px; font-weight: 700; line-height: 1;
+  font-size: 22px; font-weight: 700; line-height: 1;
 }
 .summaryLbl {
   font-family: var(--ff-mono);
-  font-size: 8.5px; font-weight: 700;
-  letter-spacing: 1.5px; color: var(--txt2);
-  text-transform: uppercase; margin-top: 5px;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 1px; color: var(--txt2);
+  text-transform: uppercase; margin-top: 4px;
+  text-align: center;
 }
 
 /* Batch table */
 .batchTable {
   width: 100%; border-collapse: collapse;
+  font-size: 12px;
 }
 .batchTable th {
   font-family: var(--ff-mono);
-  font-size: 9.5px; font-weight: 700;
-  letter-spacing: 1.5px; color: var(--txt2);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1px; color: var(--txt2);
   text-transform: uppercase;
-  padding: 8px 10px; text-align: left;
+  padding: 8px 8px; text-align: left;
   border-bottom: 1px solid var(--border-hi);
+  white-space: nowrap;
 }
 .batchTable td {
   font-family: var(--ff-mono);
-  font-size: 11.5px; color: var(--txt2);
-  padding: 9px 10px;
+  font-size: 11px; color: var(--txt2);
+  padding: 8px 8px;
   border-bottom: 1px solid var(--border);
 }
 .batchTable tr:last-child td { border-bottom: none; }
 .urlCell {
   word-break: break-all;
-  max-width: 380px;
+  max-width: 200px;
   color: var(--txt1) !important;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 14px;
+  }
+
+  .hdrTitle {
+    font-size: 15px;
+    letter-spacing: 1.5px;
+  }
+
+  .hdrSub {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+
+  .hdrIcon {
+    width: 38px; height: 38px;
+    font-size: 18px;
+  }
+
+  .statRow {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .statCard {
+    flex: 1;
+    padding: 8px 10px;
+  }
+
+  .statVal {
+    font-size: 18px;
+  }
+
+  .batchSummary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .inputRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inputRow button {
+    width: 100%;
+  }
+
+  .tabs {
+    gap: 6px;
+  }
+
+  .tabBtn {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+}
+
+.hdrRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .hdrRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* Clock */
+.clock { text-align: right; flex-shrink: 0; }
+.clockTime { font-size: 16px; font-weight: 600; font-family: monospace; color: var(--cyan); letter-spacing: 1px; white-space: nowrap; }
+.clockDate { font-size: 10px; color: var(--txt2); margin-top: 1px; white-space: nowrap; }
+
+/* Weather */
+.weather { text-align: center; flex-shrink: 0; min-width: 70px; }
+.weatherTemp { font-size: 18px; font-weight: 700; color: var(--txt1); line-height: 1; }
+.weatherDesc { font-size: 9px; color: var(--txt2); margin-top: 2px; }
+.weatherWind { font-size: 9px; color: var(--txt3); margin-top: 1px; }
+
+/* Charts */
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.chartCard {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.chartTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--txt2);
+  margin-bottom: 4px;
+  font-family: var(--ff-mono);
+  letter-spacing: 0.5px;
+}
+.chartLegend {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  font-size: 10px;
+  font-family: var(--ff-mono);
+  margin-top: 4px;
+}
+
+@media (max-width: 480px) {
+  .chartsRow { grid-template-columns: 1fr; }
+  .hdrRight { flex-wrap: wrap; gap: 8px; }
+  .clock { display: none; }
+  .weather { display: none; }
 }

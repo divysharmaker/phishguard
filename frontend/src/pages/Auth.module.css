@@ -3,102 +3,87 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 20px;
+  background: var(--bg-base);
 }
-
 .authCard {
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 36px 40px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 20px;
+  padding: 32px 28px;
 }
-
-/* top cyan line animation */
-.authCard::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-  animation: scanLine 4s ease-in-out infinite;
-}
-@keyframes scanLine {
-  0%   { transform: translateX(-100%); opacity: 0; }
-  50%  { opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-
 .logo {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
-
 .logoIcon {
-  width: 50px; height: 50px;
-  border-radius: 11px;
-  background: linear-gradient(135deg, #092b5c, #1255a0);
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--cyan-dim);
   border: 1px solid var(--border-hi);
   display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 0 22px rgba(0,200,255,0.18);
-  flex-shrink: 0;
+  font-size: 26px; flex-shrink: 0;
 }
-
 .logoTitle {
   font-family: var(--ff-head);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--txt1);
-  letter-spacing: 2.5px;
-  line-height: 1;
+  font-size: 22px; font-weight: 700;
+  color: var(--txt1); letter-spacing: 0.5px;
 }
-
 .logoSub {
-  font-family: var(--ff-mono);
-  font-size: 9px;
-  color: var(--cyan);
-  letter-spacing: 2px;
-  margin-top: 5px;
-  opacity: 0.75;
+  font-size: 11px; color: var(--txt2);
+  margin-top: 2px; font-family: var(--ff-mono);
+  letter-spacing: 1px;
 }
-
+.toggleRow {
+  display: flex; gap: 6px;
+  margin-bottom: 16px;
+  background: var(--bg-card);
+  border-radius: 10px; padding: 4px;
+}
+.toggleBtn {
+  flex: 1; padding: 8px;
+  border: none; border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; background: transparent;
+  color: var(--txt2); transition: all 0.2s;
+  font-family: var(--ff-body);
+}
+.toggleActive {
+  background: var(--bg-panel);
+  color: var(--cyan);
+  border: 1px solid var(--border-hi);
+}
+.adminNote {
+  font-size: 11px; color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid rgba(255,171,0,0.2);
+  border-radius: 8px; padding: 8px 12px;
+  margin-bottom: 12px; font-family: var(--ff-mono);
+}
+.adminBtn {
+  background: linear-gradient(135deg, #3a0870, #6b0fa8) !important;
+  border-color: rgba(179,136,255,0.4) !important;
+  color: #e8d5ff !important;
+}
 .formTitle {
-  font-family: var(--ff-body);
-  font-size: 15px;
-  color: var(--txt2);
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 16px;
+  font-size: 15px; font-weight: 600;
+  color: var(--txt1); margin-bottom: 20px;
 }
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
+.form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
 .switchText {
-  font-family: var(--ff-body);
-  font-size: 13px;
-  color: var(--txt2);
-  text-align: center;
-  margin-top: 20px;
+  text-align: center; margin-top: 20px;
+  font-size: 13px; color: var(--txt2);
 }
-
 .switchLink {
-  color: var(--cyan);
-  text-decoration: none;
-  font-weight: 600;
+  color: var(--cyan); text-decoration: none; font-weight: 600;
 }
 .switchLink:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  .authCard { padding: 24px 18px; border-radius: 16px; }
+  .logoTitle { font-size: 18px; }
+}

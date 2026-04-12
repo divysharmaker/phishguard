@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({ 
+  baseURL: 'https://phishguard-rprx.onrender.com/api'
+})
 
 // Attach JWT token to every request automatically
 api.interceptors.request.use((config) => {
