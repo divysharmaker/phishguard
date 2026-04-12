@@ -22,6 +22,7 @@ app.add_middleware(
         "https://ubiquitous-shortbread-ea41db.netlify.app",
         "https://neon-unicorn-bc332f.netlify.app",
         "https://phishguard-2026.netlify.app",
+        "https://phishguard-app-six.vercel.app",
     ],
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
 )
