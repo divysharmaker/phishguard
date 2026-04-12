@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 MONGO_URI      = "mongodb+srv://divyansh2029:Phish2026secure@cluster0.8qrhy.mongodb.net/phishguard?retryWrites=true&w=majority&appName=Cluster0"
 DB_NAME        = "phishguard"
 ADMIN_EMAIL    = "divyansh2029@gmail.com"
-ADMIN_PASSWORD = "Divy@nsh07"
+ADMIN_PASSWORD = "Divu0719"
 ADMIN_NAME     = "Divyansh Admin"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
