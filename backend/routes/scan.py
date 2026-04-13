@@ -24,35 +24,29 @@ async def scan_single(
     if not body.url.strip():
         raise HTTPException(status_code=400, detail="URL cannot be empty")
 
-    result = run_prediction(body.url.strip())
+    result = await run_prediction(body.url.strip())
 
-    # Save to scan history
     scan_doc = {
-        "user_id":    str(current_user["_id"]),
-        "url":        result["url"],
-        "verdict":    result["verdict"],
+        "user_id":     str(current_user["_id"]),
+        "url":         result["url"],
+        "verdict":     result["verdict"],
         "final_proba": result["final_proba"],
-        "url_risk":   result["url_risk"],
+        "url_risk":    result["url_risk"],
         "model_proba": result["model_proba"],
-        "flags":      result["flags"],
-        "features":   result["features"],
-        "scan_type":  "single",
-        "scanned_at": datetime.now(timezone.utc),
+        "flags":       result["flags"],
+        "features":    result["features"],
+        "scan_type":   "single",
+        "scanned_at":  datetime.now(timezone.utc),
     }
     await db.scans.insert_one(scan_doc)
 
-    # Update user counters
     is_phishing = result["verdict"] == "PHISHING"
     await db.users.update_one(
         {"_id": current_user["_id"]},
-        {"$inc": {
-            "total_scans": 1,
-            "phishing_found": 1 if is_phishing else 0,
-        }}
+        {"$inc": {"total_scans": 1, "phishing_found": 1 if is_phishing else 0}}
     )
 
     return result
-
 
 @router.post("/batch")
 async def scan_batch(
@@ -72,7 +66,7 @@ async def scan_batch(
     for raw_url in body.urls:
         if not raw_url.strip():
             continue
-        result = run_prediction(raw_url.strip())
+        result = await run_prediction(raw_url.strip())
         results.append(result)
         if result["verdict"] == "PHISHING":
             phishing_count += 1
@@ -93,17 +87,14 @@ async def scan_batch(
         await db.scans.insert_many(scan_docs)
         await db.users.update_one(
             {"_id": current_user["_id"]},
-            {"$inc": {
-                "total_scans":    len(scan_docs),
-                "phishing_found": phishing_count,
-            }}
+            {"$inc": {"total_scans": len(scan_docs), "phishing_found": phishing_count}}
         )
 
     summary = {
-        "total":     len(results),
-        "phishing":  sum(1 for r in results if r["verdict"] == "PHISHING"),
-        "suspicious":sum(1 for r in results if r["verdict"] == "SUSPICIOUS"),
-        "safe":      sum(1 for r in results if r["verdict"] in ["SAFE","TRUSTED"]),
+        "total":      len(results),
+        "phishing":   sum(1 for r in results if r["verdict"] == "PHISHING"),
+        "suspicious": sum(1 for r in results if r["verdict"] == "SUSPICIOUS"),
+        "safe":       sum(1 for r in results if r["verdict"] in ["SAFE","TRUSTED"]),
     }
 
     return {"results": results, "summary": summary}

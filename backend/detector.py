@@ -4,7 +4,6 @@ import joblib
 import numpy as np
 import pandas as pd
 import httpx
-import asyncio
 import os
 from urllib.parse import urlparse
 from pathlib import Path
@@ -18,7 +17,6 @@ model = joblib.load(MODEL_PATH)
 VT_API_KEY = os.getenv("VIRUSTOTAL_API_KEY", "")
 
 async def check_virustotal(url: str) -> dict:
-    """Check URL against VirusTotal API"""
     if not VT_API_KEY:
         return {"checked": False, "malicious": 0, "suspicious": 0, "harmless": 0}
     try:
@@ -40,7 +38,6 @@ async def check_virustotal(url: str) -> dict:
                     "undetected": stats.get("undetected", 0),
                 }
             elif res.status_code == 404:
-                # URL not in VT database yet — submit it
                 async with httpx.AsyncClient(timeout=8.0) as c2:
                     await c2.post(
                         "https://www.virustotal.com/api/v3/urls",
@@ -241,21 +238,18 @@ def extract_features(url: str, hostname: str, path: str, full_url: str, parsed) 
     }
 
 def get_verdict(final_proba: float, flags: list, vt: dict) -> str:
-    # VirusTotal override — if VT says malicious, trust it
     if vt.get("checked") and vt.get("malicious", 0) >= 2:
         return "PHISHING"
     if vt.get("checked") and vt.get("malicious", 0) == 1:
         return "SUSPICIOUS"
-    # If VT says harmless and our score is low, trust VT
     if vt.get("checked") and vt.get("harmless", 0) >= 5 and final_proba < 0.35:
         return "SAFE"
-
     hi_flags = [f for f, s in flags if s == "hi"]
     if final_proba >= 0.35 or len(hi_flags) >= 2: return "PHISHING"
     if final_proba >= 0.15 or len(hi_flags) >= 1: return "SUSPICIOUS"
     return "SAFE"
 
-async def run_prediction_async(raw_url: str) -> dict:
+async def run_prediction(raw_url: str) -> dict:
     url      = normalize_url(raw_url)
     parsed   = urlparse(url)
     hostname = parsed.hostname or ""
@@ -279,7 +273,6 @@ async def run_prediction_async(raw_url: str) -> dict:
             "virustotal": {"checked": False},
         }
 
-    # Run ML + VirusTotal in parallel
     url_risk, flags = compute_url_risk(url, parsed, hostname, path, url)
     features        = extract_features(url, hostname, path, url, parsed)
     df              = pd.DataFrame([list(features.values())], columns=list(features.keys()))
@@ -301,6 +294,3 @@ async def run_prediction_async(raw_url: str) -> dict:
         "anatomy":     anatomy,
         "virustotal":  vt,
     }
-
-def run_prediction(raw_url: str) -> dict:
-    return asyncio.run(run_prediction_async(raw_url))
