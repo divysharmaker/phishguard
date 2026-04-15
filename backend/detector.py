@@ -72,6 +72,8 @@ TRUSTED_DOMAINS = {
     "coursera.org","udemy.com","edx.org","khanacademy.org","nptel.ac.in",
     "ndtv.com","timesofindia.com","hindustantimes.com","thehindu.com","indiatoday.in",
     "bit.ly","tinyurl.com","t.co","goo.gl","ow.ly","short.link","is.gd",
+    "chandigarhuniversity.ac.in","cu.ac.in","iit.ac.in","iitd.ac.in","iitb.ac.in",
+    "yourpedia.in","testbook.com","unacademy.com","byjus.com","vedantu.com",
 }
 
 BRAND_LEGIT = {
@@ -237,16 +239,37 @@ def extract_features(url: str, hostname: str, path: str, full_url: str, parsed) 
         "IframeOrFrame":                      iframe,
     }
 
+# ── CONSISTENT VERDICT THRESHOLDS ────────────────────────────
+# Score → Verdict mapping (strict, no mismatch):
+#   0.00 – 0.39  →  SAFE        🟢
+#   0.40 – 0.69  →  SUSPICIOUS  🟡
+#   0.70 – 1.00  →  PHISHING    🔴
+# VT overrides everything when checked.
+
 def get_verdict(final_proba: float, flags: list, vt: dict) -> str:
+    # VirusTotal hard overrides
     if vt.get("checked") and vt.get("malicious", 0) >= 2:
         return "PHISHING"
     if vt.get("checked") and vt.get("malicious", 0) == 1:
         return "SUSPICIOUS"
-    if vt.get("checked") and vt.get("harmless", 0) >= 5 and final_proba < 0.35:
+    if vt.get("checked") and vt.get("harmless", 0) >= 5 and final_proba < 0.40:
         return "SAFE"
+
     hi_flags = [f for f, s in flags if s == "hi"]
-    if final_proba >= 0.35 or len(hi_flags) >= 2: return "PHISHING"
-    if final_proba >= 0.15 or len(hi_flags) >= 1: return "SUSPICIOUS"
+
+    # Strict score-based thresholds — verdict MUST match displayed score
+    if final_proba >= 0.70:
+        return "PHISHING"
+    if final_proba >= 0.40:
+        return "SUSPICIOUS"
+
+    # Below 0.40 — check if there are high-severity flags that warrant upgrade
+    # Only upgrade to SUSPICIOUS (not PHISHING) when score is low
+    if len(hi_flags) >= 2:
+        return "SUSPICIOUS"
+    if len(hi_flags) == 1 and final_proba >= 0.25:
+        return "SUSPICIOUS"
+
     return "SAFE"
 
 async def run_prediction(raw_url: str) -> dict:
