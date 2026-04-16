@@ -326,3 +326,195 @@
   .chartsGrid { grid-template-columns: 1fr 1fr 2fr; }
   .chartWide { grid-column: auto; }
 }
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS & MICRO UX
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Page fade-in ────────────────────────────────────────── */
+.page {
+  width: 100%; box-sizing: border-box;
+  animation: pageFadeIn 0.4s ease both;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Stat card — count-up + hover lift ───────────────────── */
+.statCard {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 52px;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.statCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-hi);
+  box-shadow: 0 4px 12px rgba(0,200,255,0.08);
+}
+
+/* ── Chart cards — slide up ──────────────────────────────── */
+.chartAnimate {
+  animation: slideUp 0.5s ease both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.chartCard {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.chartCard:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 4px 16px rgba(0,200,255,0.06);
+}
+
+/* ── Scan input — focus glow ─────────────────────────────── */
+.scanInput {
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s !important;
+}
+.scanInput:focus {
+  transform: scale(1.005);
+}
+
+/* ── Ripple button ───────────────────────────────────────── */
+.rippleBtn { position: relative; overflow: hidden; }
+.ripple {
+  position: absolute;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  animation: rippleAnim 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  from { transform: scale(0); opacity: 1; }
+  to   { transform: scale(6); opacity: 0; }
+}
+
+/* ── Result wrapper — slide in ───────────────────────────── */
+.resultWrapper {
+  margin-top: 16px;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.resultVisible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ── Scanning progress bar ───────────────────────────────── */
+.scanProgressBar {
+  width: 200px; max-width: 80%;
+  height: 3px; background: var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.scanProgressFill {
+  height: 100%; background: var(--cyan);
+  border-radius: 2px;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 6px var(--cyan);
+}
+
+/* ── Recent items — stagger in ───────────────────────────── */
+.recentItem {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; font-family: var(--ff-mono); font-size: 10px;
+  animation: fadeSlideIn 0.3s ease both;
+  transition: border-color 0.2s, background 0.2s;
+}
+.recentItem:hover {
+  border-color: var(--border-hi);
+  background: var(--bg-card2);
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Step cards — hover lift + glow ─────────────────────── */
+.stepHover {
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  animation: fadeSlideIn 0.4s ease both;
+}
+.stepHover:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hi);
+  box-shadow: 0 6px 16px rgba(0,200,255,0.08);
+}
+
+/* ── Quick test buttons — pop ────────────────────────────── */
+.quickBtn {
+  font-family: var(--ff-mono); font-size: 9px; font-weight: 700;
+  padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid; letter-spacing: 0.5px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s !important;
+}
+.quickBtn:hover { transform: scale(1.06); }
+.quickBtn:active { transform: scale(0.96); }
+
+/* ── Tab buttons — smooth ────────────────────────────────── */
+.tabBtn {
+  transition: all 0.25s ease !important;
+}
+.tabBtn:hover { transform: translateY(-1px); }
+
+/* ── Batch result — fade in ──────────────────────────────── */
+.batchResultAnim {
+  animation: slideUp 0.4s ease both;
+}
+.batchRow {
+  animation: fadeSlideIn 0.3s ease both;
+}
+.batchRow:hover td { background: rgba(0,200,255,0.025); }
+
+/* ── Error shake ─────────────────────────────────────────── */
+.errorShake {
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-6px); }
+  40%     { transform: translateX(6px); }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px); }
+}
+
+/* ── Header icon pulse ───────────────────────────────────── */
+.hdrIcon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--cyan-dim); border: 1px solid var(--border-hi);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  animation: iconPulse 3s ease-in-out infinite;
+}
+@keyframes iconPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,200,255,0); }
+  50%     { box-shadow: 0 0 0 6px rgba(0,200,255,0.08); }
+}
+
+/* ── Welcome text ────────────────────────────────────────── */
+.welcome {
+  font-size: 13px; color: var(--txt2);
+  margin-bottom: 14px; padding: 0 2px;
+}
+.welcome strong { color: var(--txt1); }
+
+/* ── Panel hover ─────────────────────────────────────────── */
+.recentPanel, .quickTest, .howItWorks {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.recentPanel:hover, .quickTest:hover, .howItWorks:hover {
+  border-color: var(--border-hi);
+}
+
+/* ── Threat fill — smooth ────────────────────────────────── */
+.threatFill {
+  height: 100%; border-radius: 3px;
+  transition: width 1.2s cubic-bezier(0.25,0.46,0.45,0.94);
+}

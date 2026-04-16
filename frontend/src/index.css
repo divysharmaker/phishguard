@@ -208,3 +208,59 @@ body {
   border-radius: 20px;
   text-transform: uppercase;
 }
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL ANIMATIONS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Smooth button press ─────────────────────────────────── */
+.pg-btn {
+  transition: all 0.2s cubic-bezier(0.25,0.46,0.45,0.94) !important;
+}
+.pg-btn:active:not(:disabled) {
+  transform: scale(0.97) translateY(0) !important;
+}
+
+/* ── Input focus animation ───────────────────────────────── */
+.pg-input {
+  transition: border-color 0.25s, box-shadow 0.25s !important;
+}
+
+/* ── Panel hover ─────────────────────────────────────────── */
+.panel {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* ── Spinner glow ────────────────────────────────────────── */
+.spinner {
+  box-shadow: 0 0 10px rgba(0,200,255,0.2);
+}
+
+/* ── Skeleton shimmer (for loading states) ───────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card2) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ── Sec-lbl line animation ──────────────────────────────── */
+.sec-lbl::before {
+  transition: width 0.3s ease;
+}
+.sec-lbl:hover::before { width: 28px; }
+
+/* ── Error message animate ───────────────────────────────── */
+.error-msg {
+  animation: errorFade 0.3s ease both;
+}
+@keyframes errorFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scrollbar smooth ────────────────────────────────────── */
+* { scroll-behavior: smooth; }

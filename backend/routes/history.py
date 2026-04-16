@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime
 
 from database import get_db
-from auth import get_current_user
+from backend.routes.routes_auth import get_current_user
 
 router = APIRouter()
 

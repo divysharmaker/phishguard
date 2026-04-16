@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Login          from './pages/Login'
 import Register       from './pages/Register'
+import ResetPassword  from './pages/ResetPassword'
 import Dashboard      from './pages/Dashboard'
 import History        from './pages/History'
 import Settings       from './pages/Settings'
@@ -34,8 +35,9 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/login"    element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/login"          element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/register"       element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="history"   element={<History />} />
