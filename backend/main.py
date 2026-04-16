@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 import uvicorn
 
 from database import connect_db, close_db
-from backend.routes.auth    import router as auth_router
+from routes.auth    import router as auth_router
 from routes.scan    import router as scan_router
 from routes.history import router as history_router
 
@@ -23,7 +23,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="PhishGuard AI", version="2.0.0", lifespan=lifespan)
 
-# Attach limiter
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
