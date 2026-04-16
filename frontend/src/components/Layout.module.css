@@ -2,29 +2,35 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  height: 52px;
+  padding: 0 12px;
+  height: 48px;
   background: var(--bg-panel);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
   flex-shrink: 0;
-  gap: 8px;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .navLeft {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
-  flex-shrink: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .navLogo {
@@ -33,33 +39,29 @@
   gap: 6px;
   flex-shrink: 0;
 }
-
 .navIcon { font-size: 16px; }
-
 .navTitle {
   font-family: var(--ff-head);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--txt1);
-  letter-spacing: 0.5px;
-  white-space: nowrap;
+  font-size: 14px; font-weight: 700;
+  color: var(--txt1); letter-spacing: 0.5px; white-space: nowrap;
 }
 
 .navLinks {
   display: flex;
-  gap: 2px;
+  gap: 1px;
+  overflow: hidden;
 }
 
 .navLink {
   font-family: var(--ff-body);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px; font-weight: 500;
   color: var(--txt2);
   text-decoration: none;
-  padding: 5px 8px;
+  padding: 4px 7px;
   border-radius: 6px;
   transition: all 0.2s;
   white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
 }
 .navLink:hover { color: var(--txt1); background: var(--cyan-dim); }
 .navLink.active {
@@ -67,71 +69,61 @@
   background: var(--cyan-dim);
   border: 1px solid var(--border-hi);
 }
+.linkIcon { font-size: 12px; }
+.linkLabel { }
 
 .navRight {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-shrink: 0;
 }
 
-.themeBtn, .autoBtn {
-  width: 28px; height: 28px;
+.themeBtn {
+  width: 26px; height: 26px;
   border-radius: 50%;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  cursor: pointer;
-  font-size: 13px;
+  cursor: pointer; font-size: 12px;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-  padding: 0;
+  transition: all 0.2s; flex-shrink: 0; padding: 0;
 }
 .themeBtn:hover { border-color: var(--border-hi); transform: rotate(20deg); }
-.autoBtn:hover  { border-color: var(--border-hi); }
 
 .userAvatar {
-  width: 26px; height: 26px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   background: var(--cyan-dim);
   border: 1px solid var(--border-hi);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--cyan);
-  flex-shrink: 0;
+  font-size: 11px; font-weight: 700; color: var(--cyan); flex-shrink: 0;
 }
-
 .userName {
-  font-size: 12px;
-  color: var(--txt2);
-  white-space: nowrap;
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
-
 .logoutBtn {
   width: auto !important;
-  padding: 0 10px !important;
-  height: 28px !important;
-  font-size: 11px !important;
+  padding: 0 8px !important;
+  height: 26px !important;
+  font-size: 10px !important;
   flex-shrink: 0;
+  letter-spacing: 0.5px !important;
 }
 
 .main {
   flex: 1;
-  padding: 16px;
-  max-width: 1280px;
+  padding: 12px;
   width: 100%;
-  margin: 0 auto;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
-/* Mobile */
-@media (max-width: 480px) {
-  .nav { padding: 0 10px; height: 48px; }
-  .navTitle { font-size: 13px; }
-  .userName { display: none; }
-  .main { padding: 10px; }
+@media (min-width: 768px) {
+  .nav { padding: 0 20px; height: 52px; }
+  .navTitle { font-size: 15px; }
+  .navLink { font-size: 13px; padding: 5px 10px; }
+  .userAvatar { width: 28px; height: 28px; font-size: 13px; }
+  .userName { display: block; font-size: 12px; color: var(--txt2); white-space: nowrap; max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+  .logoutBtn { padding: 0 12px !important; height: 28px !important; font-size: 11px !important; }
+  .main { padding: 20px; max-width: 1280px; margin: 0 auto; }
 }

@@ -11,8 +11,9 @@ function getAutoTheme() {
 export default function Layout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const [theme, setTheme] = useState(() => localStorage.getItem('pg_theme') || getAutoTheme())
-  const [manualOverride, setManualOverride] = useState(() => !!localStorage.getItem('pg_theme'))
+  const [theme, setTheme]               = useState(() => localStorage.getItem('pg_theme') || getAutoTheme())
+  const [manualOverride, setManual]     = useState(() => !!localStorage.getItem('pg_theme'))
+  const [menuOpen, setMenuOpen]         = useState(false)
 
   useEffect(() => {
     if (manualOverride) return
@@ -32,11 +33,18 @@ export default function Layout() {
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next); setManualOverride(true)
+    setTheme(next); setManual(true)
     localStorage.setItem('pg_theme', next)
   }
 
   const handleLogout = () => { logout(); navigate('/login') }
+
+  const navLinks = [
+    { to: '/dashboard', label: 'Scanner', icon: '🔍' },
+    { to: '/history',   label: 'History', icon: '📋' },
+    { to: '/about',     label: 'Model',   icon: '🧠' },
+    { to: '/settings',  label: 'Settings',icon: '⚙️' },
+  ]
 
   return (
     <div className={styles.shell}>
@@ -47,17 +55,16 @@ export default function Layout() {
             <span className={styles.navTitle}>PhishGuard</span>
           </div>
           <div className={styles.navLinks}>
-            <NavLink to="/dashboard" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
-              Scanner
-            </NavLink>
-            <NavLink to="/history" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
-              History
-            </NavLink>
-            <NavLink to="/settings" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
-              Settings
-            </NavLink>
+            {navLinks.map(l => (
+              <NavLink key={l.to} to={l.to}
+                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+                <span className={styles.linkIcon}>{l.icon}</span>
+                <span className={styles.linkLabel}>{l.label}</span>
+              </NavLink>
+            ))}
           </div>
         </div>
+
         <div className={styles.navRight}>
           <button onClick={toggleTheme} className={styles.themeBtn} title="Toggle theme">
             {theme === 'dark' ? '☀️' : '🌙'}

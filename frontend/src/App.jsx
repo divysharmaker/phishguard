@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
-import Login         from './pages/Login'
-import Register      from './pages/Register'
-import Dashboard     from './pages/Dashboard'
-import History       from './pages/History'
-import Settings      from './pages/Settings'
-import Layout        from './components/Layout'
-import AdminLayout   from './pages/admin/AdminLayout'
+import Login          from './pages/Login'
+import Register       from './pages/Register'
+import Dashboard      from './pages/Dashboard'
+import History        from './pages/History'
+import Settings       from './pages/Settings'
+import AboutModel     from './pages/AboutModel'
+import Layout         from './components/Layout'
+import AdminLayout    from './pages/admin/AdminLayout'
 import AdminDashboard from './pages/admin/AdminDashboard'
 
 function PrivateRoute({ children }) {
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="history"   element={<History />} />
         <Route path="settings"  element={<Settings />} />
+        <Route path="about"     element={<AboutModel />} />
       </Route>
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<AdminDashboard />} />
