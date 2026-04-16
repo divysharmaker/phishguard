@@ -141,7 +141,7 @@ async def reset_password(body: ResetPasswordRequest, db=Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
 
     expires = user.get("reset_token_expires")
-    if not expires or datetime.now(timezone.utc) > expires:
+    if not expires or datetime.now(timezone.utc) > (expires.replace(tzinfo=timezone.utc) if expires.tzinfo is None else expires):
         raise HTTPException(status_code=400, detail="Reset token has expired. Please request a new one.")
 
     await db.users.update_one(
@@ -184,7 +184,7 @@ async def verify_otp(body: VerifyOTPRequest, db=Depends(get_db)):
 
     if not stored_otp or stored_otp != body.otp:
         raise HTTPException(status_code=400, detail="Invalid OTP")
-    if not expires or datetime.now(timezone.utc) > expires:
+    if not expires or datetime.now(timezone.utc) > (expires.replace(tzinfo=timezone.utc) if expires.tzinfo is None else expires):
         raise HTTPException(status_code=400, detail="OTP has expired. Please request a new one.")
 
     await db.users.update_one(
