@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 import uvicorn
 
 from database import connect_db, close_db
-from backend.routes.routes_auth    import router as auth_router
+from backend.routes.auth    import router as auth_router
 from routes.scan    import router as scan_router
 from routes.history import router as history_router
 
