@@ -154,3 +154,17 @@
 .sentIcon { font-size: 40px; margin-bottom: 12px; }
 .sentTitle { font-family: var(--ff-mono); font-size: 14px; font-weight: 700; color: var(--txt1); margin-bottom: 8px; }
 .sentDesc { font-size: 13px; color: var(--txt2); line-height: 1.6; }
+
+/* ── OTP styles ──────────────────────────────────────────── */
+.otpInfo {
+  background: var(--bg-card);
+  border: 1px solid var(--border-hi);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.otpInfoText { font-size: 13px; color: var(--txt2); margin-bottom: 6px; }
+.otpEmail    { font-family: var(--ff-mono); font-size: 13px; font-weight: 700; color: var(--cyan); }
+.otpExpiry   { font-size: 11px; color: var(--txt3); margin-top: 6px; font-family: var(--ff-mono); }
+.otpInput    { text-align: center; letter-spacing: 8px !important; font-size: 20px !important; }
