@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import re
 
 from database import get_db
-from backend.routes.auth import get_current_user
+from auth import get_current_user
 from detector import run_prediction
 
 router = APIRouter()
