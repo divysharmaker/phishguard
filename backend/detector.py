@@ -247,27 +247,35 @@ def extract_features(url: str, hostname: str, path: str, full_url: str, parsed) 
 # VT overrides everything when checked.
 
 def get_verdict(final_proba: float, flags: list, vt: dict) -> str:
-    # VirusTotal hard overrides
-    if vt.get("checked") and vt.get("malicious", 0) >= 2:
+    # ── VirusTotal hard overrides ─────────────────────────────
+    # 3+ engines = definite PHISHING
+    if vt.get("checked") and vt.get("malicious", 0) >= 3:
         return "PHISHING"
-    if vt.get("checked") and vt.get("malicious", 0) == 1:
-        return "SUSPICIOUS"
-    if vt.get("checked") and vt.get("harmless", 0) >= 5 and final_proba < 0.40:
+    # 2 engines = PHISHING only if score also elevated
+    if vt.get("checked") and vt.get("malicious", 0) == 2:
+        return "PHISHING" if final_proba >= 0.20 else "SUSPICIOUS"
+    # 1 engine = only bump up one level, never override a low score to SUSPICIOUS
+    # (many test/security sites get 1 VT flag — not reliable enough alone)
+    # VT harmless majority + low score = SAFE
+    if vt.get("checked") and vt.get("harmless", 0) >= 10 and final_proba < 0.40:
         return "SAFE"
 
     hi_flags = [f for f, s in flags if s == "hi"]
 
-    # Strict score-based thresholds — verdict MUST match displayed score
+    # ── Strict score-based thresholds ────────────────────────
+    # Verdict MUST match the displayed score — no mismatch allowed
+    # 0–39%  → SAFE
+    # 40–69% → SUSPICIOUS
+    # 70%+   → PHISHING
     if final_proba >= 0.70:
         return "PHISHING"
     if final_proba >= 0.40:
         return "SUSPICIOUS"
 
-    # Below 0.40 — check if there are high-severity flags that warrant upgrade
-    # Only upgrade to SUSPICIOUS (not PHISHING) when score is low
+    # Score < 40% — only upgrade if strong heuristic evidence
     if len(hi_flags) >= 2:
         return "SUSPICIOUS"
-    if len(hi_flags) == 1 and final_proba >= 0.25:
+    if len(hi_flags) == 1 and final_proba >= 0.28:
         return "SUSPICIOUS"
 
     return "SAFE"
