@@ -247,6 +247,7 @@ def extract_features(url: str, hostname: str, path: str, full_url: str, parsed) 
 # VT overrides everything when checked.
 
 def get_verdict(final_proba: float, flags: list, vt: dict) -> str:
+    vt = vt or {}
     # ── VirusTotal hard overrides ─────────────────────────────
     # 3+ engines = definite PHISHING
     if vt.get("checked") and vt.get("malicious", 0) >= 3:
