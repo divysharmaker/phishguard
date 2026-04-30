@@ -509,10 +509,6 @@ export default function Dashboard() {
       </div>
 
       {/* Footer */}
-      <div className={styles.footer}>
-        <span>Final Year Project — Divyansh Sharma</span>
-        <span>Phishing URL Detection using ML · 2026</span>
-      </div>
     </div>
   )
 }
