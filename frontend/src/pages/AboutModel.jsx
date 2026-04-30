@@ -174,16 +174,11 @@ export default function AboutModel() {
             <li>New phishing domains not yet indexed by VirusTotal may return SUSPICIOUS instead of PHISHING</li>
             <li>Complex legitimate URLs with many path segments may trigger false positives</li>
           </ul>
-          <div className={styles.limitNote}>
-            💡 Future improvements: WHOIS domain age check, webpage content analysis, real-time threat feeds
-          </div>
+
         </div>
       </div>
 
-      <div style={{ marginTop: '24px', padding: '10px 2px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-        <span style={{ fontSize: '10px', color: 'var(--txt3)', fontFamily: 'var(--ff-mono)' }}>Final Year Project — Divyansh Sharma | Chandigarh University</span>
-        <span style={{ fontSize: '10px', color: 'var(--txt3)', fontFamily: 'var(--ff-mono)' }}>Phishing URL Detection using ML · 2026</span>
-      </div>
+
     </div>
   )
 }
