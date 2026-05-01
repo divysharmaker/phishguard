@@ -1,12 +1,12 @@
+import smtplib
 import os
 import random
 import string
-import urllib.request
-import urllib.error
-import json
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-FROM_EMAIL     = "PhishGuard <onboarding@resend.dev>"
+GMAIL_USER     = os.getenv("GMAIL_USER", "")
+GMAIL_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "")
 
 def generate_otp(length=6) -> str:
     return ''.join(random.choices(string.digits, k=length))
@@ -15,33 +15,19 @@ def generate_reset_token(length=32) -> str:
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def send_email(to_email: str, subject: str, html_body: str) -> bool:
-    if not RESEND_API_KEY:
-        print("⚠️ RESEND_API_KEY not set — email not sent")
+    if not GMAIL_USER or not GMAIL_PASSWORD:
+        print("⚠️ Gmail credentials not set — email not sent")
         return False
     try:
-        payload = json.dumps({
-            "from": FROM_EMAIL,
-            "to": [to_email],
-            "subject": subject,
-            "html": html_body
-        }).encode("utf-8")
-
-        req = urllib.request.Request(
-            "https://api.resend.com/emails",
-            data=payload,
-            headers={
-                "Authorization": f"Bearer {RESEND_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            method="POST"
-        )
-        with urllib.request.urlopen(req) as resp:
-            result = json.loads(resp.read())
-            print(f"✅ Email sent: {result.get('id')}")
-            return True
-    except urllib.error.HTTPError as e:
-        print(f"❌ Email error: {e.code} {e.read().decode()}")
-        return False
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"]    = f"PhishGuard <{GMAIL_USER}>"
+        msg["To"]      = to_email
+        msg.attach(MIMEText(html_body, "html"))
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(GMAIL_USER, GMAIL_PASSWORD)
+            server.sendmail(GMAIL_USER, to_email, msg.as_string())
+        return True
     except Exception as e:
         print(f"❌ Email error: {e}")
         return False
@@ -69,10 +55,10 @@ def send_otp_email(to_email: str, name: str, otp: str) -> bool:
             <div style="font-size:36px;font-weight:700;letter-spacing:12px;color:#00c8ff;font-family:monospace;">{otp}</div>
             <div style="color:#2e4a66;font-size:11px;margin-top:8px;">Valid for 10 minutes</div>
           </div>
-          <p style="color:#2e4a66;font-size:12px;margin:0;">If you didn't request this, please ignore this email.</p>
+          <p style="color:#2e4a66;font-size:12px;margin:0;">If you didn't request this, please ignore this email. Your account is safe.</p>
         </div>
         <div style="padding:16px 32px;border-top:1px solid rgba(0,200,255,0.08);text-align:center;">
-          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Divyansh Sharma</p>
+          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Final Year Project — Divyansh Sharma</p>
         </div>
       </div>
     </body>
@@ -99,7 +85,7 @@ def send_reset_email(to_email: str, name: str, reset_token: str, base_url: str) 
         </div>
         <div style="padding:32px;">
           <p style="color:#6e93b8;font-size:14px;margin:0 0 8px;">Hi <strong style="color:#deeaf8;">{name}</strong>,</p>
-          <p style="color:#6e93b8;font-size:14px;margin:0 0 24px;">Click the button below to reset your password:</p>
+          <p style="color:#6e93b8;font-size:14px;margin:0 0 24px;">We received a request to reset your password. Click the button below:</p>
           <div style="text-align:center;margin:28px 0;">
             <a href="{reset_link}" style="display:inline-block;background:#00c8ff;color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:1px;">Reset Password</a>
           </div>
@@ -107,10 +93,10 @@ def send_reset_email(to_email: str, name: str, reset_token: str, base_url: str) 
           <div style="background:#0d1525;border:1px solid rgba(0,200,255,0.15);border-radius:8px;padding:12px;word-break:break-all;">
             <a href="{reset_link}" style="color:#00c8ff;font-size:11px;font-family:monospace;">{reset_link}</a>
           </div>
-          <p style="color:#2e4a66;font-size:12px;margin:20px 0 0;">This link expires in <strong>30 minutes</strong>.</p>
+          <p style="color:#2e4a66;font-size:12px;margin:20px 0 0;">This link expires in <strong>30 minutes</strong>. If you didn't request this, ignore this email.</p>
         </div>
         <div style="padding:16px 32px;border-top:1px solid rgba(0,200,255,0.08);text-align:center;">
-          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Divyansh Sharma</p>
+          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Final Year Project — Divyansh Sharma</p>
         </div>
       </div>
     </body>
@@ -135,10 +121,10 @@ def send_welcome_email(to_email: str, name: str) -> bool:
             <div style="color:#00e676;font-size:13px;font-weight:700;margin-bottom:8px;">✅ Account Created Successfully</div>
             <div style="color:#6e93b8;font-size:12px;">Email: <span style="color:#deeaf8;">{to_email}</span></div>
           </div>
-          <p style="color:#6e93b8;font-size:13px;margin:0;">Start scanning at <a href="https://phishguard-app-six.vercel.app" style="color:#00c8ff;">phishguard-app-six.vercel.app</a></p>
+          <p style="color:#6e93b8;font-size:13px;margin:0;">Start scanning URLs for phishing threats at <a href="https://phishguard-app-six.vercel.app" style="color:#00c8ff;">phishguard-app-six.vercel.app</a></p>
         </div>
         <div style="padding:16px 32px;border-top:1px solid rgba(0,200,255,0.08);text-align:center;">
-          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Divyansh Sharma</p>
+          <p style="color:#2e4a66;font-size:11px;margin:0;">© 2026 PhishGuard · Final Year Project — Divyansh Sharma</p>
         </div>
       </div>
     </body>
